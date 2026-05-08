@@ -1,5 +1,5 @@
-// Service Worker para Dashboard Financiero v4.0
-const CACHE_NAME = 'dashboard-financiero-v4';
+// Service Worker para Dashboard Financiero v4.1
+const CACHE_NAME = 'dashboard-financiero-v4.1';
 const urlsToCache = [
   './',
   './index.html',
@@ -16,13 +16,21 @@ self.addEventListener('install', function(event) {
     caches.open(CACHE_NAME)
       .then(function(cache) {
         console.log('Cache abierto');
-        return cache.addAll(urlsToCache);
+        // Usamos un enfoque más robusto para que si falla un recurso externo no se rompa todo
+        return Promise.allSettled(
+          urlsToCache.map(url => cache.add(url))
+        ).then(results => {
+          const failed = results.filter(r => r.status === 'rejected');
+          if (failed.length > 0) {
+            console.warn('Algunos archivos no se pudieron cachear:', failed);
+          }
+          return self.skipWaiting();
+        });
       })
       .catch(function(error) {
-        console.error('Error al cachear archivos:', error);
+        console.error('Error crítico en instalación:', error);
       })
   );
-  self.skipWaiting();
 });
 
 // Activación del Service Worker
@@ -37,45 +45,37 @@ self.addEventListener('activate', function(event) {
           }
         })
       );
-    })
+    }).then(() => self.clients.claim())
   );
-  return self.clients.claim();
 });
 
 // Intercepción de solicitudes
 self.addEventListener('fetch', function(event) {
+  // Solo interceptar peticiones GET
+  if (event.request.method !== 'GET') return;
+
   event.respondWith(
     caches.match(event.request)
       .then(function(response) {
-        // Si hay respuesta en cache, devolverla
         if (response) {
           return response;
         }
         
-        // Si no, hacer fetch a la red
-        return fetch(event.request).then(
-          function(response) {
-            // Verificar si la respuesta es válida
-            if (!response || response.status !== 200 || response.type !== 'basic') {
-              return response;
-            }
-            
-            // Clonar la respuesta
-            var responseToCache = response.clone();
-            
-            caches.open(CACHE_NAME)
-              .then(function(cache) {
-                cache.put(event.request, responseToCache);
-              });
-            
-            return response;
+        return fetch(event.request).then(function(response) {
+          // Si la respuesta es válida, cachearla para el futuro
+          if (response && response.status === 200 && response.type === 'basic') {
+            const responseToCache = response.clone();
+            caches.open(CACHE_NAME).then(function(cache) {
+              cache.put(event.request, responseToCache);
+            });
           }
-        );
-      })
-      .catch(function(error) {
-        console.log('Fetch falló; devolviendo página offline', error);
+          return response;
+        }).catch(() => {
+          // Si falla internet, intentar devolver el index.html
+          if (event.request.mode === 'navigate') {
+            return caches.match('./index.html');
+          }
+        });
       })
   );
 });
-
- 

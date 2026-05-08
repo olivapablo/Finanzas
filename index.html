@@ -2853,15 +2853,12 @@
 
         setInterval(scheduleWeeklyReminder, 24 * 60 * 60 * 1000);
 
+        // PWA Service Worker Registration
         if ('serviceWorker' in navigator) {
-            window.addEventListener('load', function () {
-                navigator.serviceWorker.register('service-worker.js')
-                    .then(function (registration) {
-                        console.log('Service Worker registrado:', registration);
-                    })
-                    .catch(function (error) {
-                        console.log('Error al registrar Service Worker:', error);
-                    });
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./service-worker.js')
+                    .then(reg => console.log('SW registered!', reg))
+                    .catch(err => console.log('SW registration failed!', err));
             });
         }
     </script>
