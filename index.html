@@ -67,6 +67,11 @@
             transition: background 0.3s ease, color 0.3s ease;
         }
 
+        button {
+            font-family: 'Jockey One', sans-serif !important;
+            text-transform: uppercase !important;
+        }
+
         @keyframes fadeInUp {
             from {
                 opacity: 0;
@@ -390,7 +395,8 @@
             padding: 1rem;
             font-size: 1rem;
             font-weight: 600;
-            font-family: 'Montserrat', sans-serif;
+            font-family: 'Jockey One', sans-serif !important;
+            text-transform: uppercase !important;
             border: none;
             border-radius: 12px;
             color: white;
@@ -2400,41 +2406,7 @@
             }
         });
 
-        // Manual savings
-        const openManualSavingBtn = document.getElementById('openManualSavingBtn');
-        const manualSavingModal = document.getElementById('manualSavingModal');
-        const cancelManualSavingBtn = document.getElementById('cancelManualSavingBtn');
 
-        if (openManualSavingBtn) {
-            openManualSavingBtn.addEventListener('click', function () {
-                const data = loadData();
-                if (!data.goal) {
-                    alert('¡Primero debes establecer una meta!');
-                    return;
-                }
-
-                const goalSelected = document.getElementById('manualSavingGoalDisplay');
-                const goalItems = document.getElementById('manualSavingGoalItems');
-
-                goalSelected.innerHTML = data.goal.name;
-                goalItems.innerHTML = `<div data-value="${data.goal.name}">${data.goal.name}</div>`;
-
-                goalItems.querySelector('div').addEventListener('click', function (e) {
-                    e.stopPropagation();
-                    goalSelected.innerHTML = this.dataset.value;
-                    goalItems.classList.add('select-hide');
-                    goalSelected.classList.remove('select-arrow-active');
-                });
-
-                manualSavingModal.classList.add('active');
-            });
-        }
-
-        if (cancelManualSavingBtn) {
-            cancelManualSavingBtn.addEventListener('click', function () {
-                manualSavingModal.classList.remove('active');
-            });
-        }
 
 
 
@@ -2444,11 +2416,7 @@
             }
         });
 
-        manualSavingInput.addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') {
-                addManualSavingBtn.click();
-            }
-        });
+
 
         // Savings modal
         const savingsBtnWallets = document.getElementById('savingsBtnWallets');
@@ -2660,7 +2628,7 @@
             pieChartCard.style.display = 'none';
             repeatBtn.style.display = 'none';
             incomeInput.value = '';
-            manualSavingInput.value = '';
+
             currentDistribution = [];
 
             if (pieChart) {
@@ -2832,11 +2800,13 @@
 
         // Close modals on outside click
         [savingsModal, transferModal, resetModal, goalModal, editGoalModal, addToGoalModal, deleteGoalModal, manualSavingModal].forEach(modal => {
-            modal.addEventListener('click', function (e) {
-                if (e.target === modal) {
-                    modal.classList.remove('active');
-                }
-            });
+            if (modal) {
+                modal.addEventListener('click', function (e) {
+                    if (e.target === modal) {
+                        modal.classList.remove('active');
+                    }
+                });
+            }
         });
 
         // Init
