@@ -1227,6 +1227,14 @@
             </div>
 
             <div class="card">
+                <h2 class="card-title">🔔 Notificaciones</h2>
+                <p style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 1rem;">
+                    Activa recordatorios semanales para registrar tus ingresos.
+                </p>
+                <button class="btn-primary" id="activateNotificationsSettings">Activar Notificaciones</button>
+            </div>
+
+            <div class="card">
                 <h2 class="card-title">📊 Información</h2>
                 <p style="color: var(--text-secondary); font-size: 0.875rem; line-height: 1.6;">
                     Dashboard Financiero Personal v4.0<br>
@@ -1460,6 +1468,7 @@
         const exchangeRateDisplay = document.getElementById('exchangeRateDisplay');
         const notificationBanner = document.getElementById('notificationBanner');
         const enableNotifications = document.getElementById('enableNotifications');
+        const activateNotificationsSettings = document.getElementById('activateNotificationsSettings');
 
         // Modals
         const savingsModal = document.getElementById('savingsModal');
@@ -1535,8 +1544,8 @@
                 if (cached) {
                     const data = JSON.parse(cached);
                     exchangeRate = data.rate;
-                    updateExchangeRateDisplay();
                 }
+                updateExchangeRateDisplay();
             }
         }
 
@@ -2757,14 +2766,21 @@
             }
         }
 
-        enableNotifications.addEventListener('click', async function () {
+        if (enableNotifications) {
+            enableNotifications.addEventListener('click', handleNotificationActivation);
+        }
+        if (activateNotificationsSettings) {
+            activateNotificationsSettings.addEventListener('click', handleNotificationActivation);
+        }
+
+        async function handleNotificationActivation() {
             try {
                 const permission = await Notification.requestPermission();
                 if (permission === 'granted') {
-                    notificationBanner.style.display = 'none';
+                    if (notificationBanner) notificationBanner.style.display = 'none';
                     localStorage.setItem('notificationsEnabled', 'true');
                     scheduleWeeklyReminder();
-                    alert('✅ Notificaciones activadas! Te recordaremos registrar tu ingreso semanal.');
+                    alert('✅ ¡Notificaciones activadas! Te recordaremos registrar tu ingreso semanal.');
                 } else if (permission === 'denied') {
                     alert('❌ Permiso denegado. Activa las notificaciones desde la configuración de tu navegador.');
                 }
@@ -2772,7 +2788,7 @@
                 console.error('Error requesting notification permission:', error);
                 alert('⚠️ No se pudo activar las notificaciones. Verifica los permisos de tu navegador.');
             }
-        });
+        }
 
         function scheduleWeeklyReminder() {
             const lastCheck = localStorage.getItem('lastNotificationCheck');
@@ -2799,7 +2815,7 @@
         }
 
         // Close modals on outside click
-        [savingsModal, transferModal, resetModal, goalModal, editGoalModal, addToGoalModal, deleteGoalModal, manualSavingModal].forEach(modal => {
+        [savingsModal, transferModal, resetModal, goalModal, editGoalModal, addToGoalModal, deleteGoalModal].forEach(modal => {
             if (modal) {
                 modal.addEventListener('click', function (e) {
                     if (e.target === modal) {
