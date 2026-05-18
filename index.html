@@ -1182,6 +1182,11 @@
                         <span style="color: var(--text-secondary); font-weight: 500;">Hobby Pokémon</span>
                     </div>
                     <div
+                        style="display: flex; justify-content: space-between; align-items: center; padding: 0.25rem 0; border-bottom: 1px solid rgba(148, 163, 184, 0.08);">
+                        <span style="font-weight: 700; color: #E50019;">Claro Pay:</span>
+                        <span style="color: var(--text-secondary); font-weight: 500;">Abono celular</span>
+                    </div>
+                    <div
                         style="display: flex; justify-content: space-between; align-items: center; padding: 0.25rem 0;">
                         <span style="font-weight: 700; color: #FF6B00;">Naranja X:</span>
                         <span style="color: var(--text-secondary); font-weight: 500;">Ahorros</span>
@@ -1333,6 +1338,7 @@
                         <div data-value="Brubank">Brubank</div>
                         <div data-value="Ualá">Ualá</div>
                         <div data-value="Lemon Cash">Lemon Cash</div>
+                        <div data-value="Claro Pay">Claro Pay</div>
                     </div>
                 </div>
             </div>
@@ -1473,7 +1479,8 @@
             { name: 'Transporte + Cigarrillos + Uber', wallet: 'Mercado Pago', percentage: 0.20, color: '#00BCFF', walletClass: 'wallet-mp', type: 'expense' },
             { name: 'Facultad y Gimnasio', wallet: 'Brubank', percentage: 0.23, color: '#FF006B', walletClass: 'wallet-brubank', type: 'expense' },
             { name: 'Salidas', wallet: 'Ualá', percentage: 0.15, color: '#00D4FF', walletClass: 'wallet-uala', type: 'expense' },
-            { name: 'Hobby Pokémon', wallet: 'Lemon Cash', percentage: 0.07, color: '#FFD500', walletClass: 'wallet-lemon', type: 'expense' }
+            { name: 'Hobby Pokémon', wallet: 'Lemon Cash', percentage: 0.07, color: '#FFD500', walletClass: 'wallet-lemon', type: 'expense' },
+            { name: 'Abono celular', wallet: 'Claro Pay', fixed: 3000, color: '#E50019', walletClass: 'wallet-claro', type: 'expense' }
         ];
 
         let pieChart = null;

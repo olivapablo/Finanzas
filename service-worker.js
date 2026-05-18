@@ -1,5 +1,5 @@
-// Service Worker para Dashboard Financiero v4.3
-const CACHE_NAME = 'dashboard-financiero-v4.3';
+// Service Worker para Dashboard Financiero v4.4
+const CACHE_NAME = 'dashboard-financiero-v4.4';
 const urlsToCache = [
   './',
   './index.html',
