@@ -2921,8 +2921,26 @@
         // PWA Service Worker Registration
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./service-worker.js')
-                    .then(reg => console.log('SW registered!', reg))
+                navigator.serviceWorker.register('./service-worker.js', { updateViaCache: 'none' })
+                    .then(reg => {
+                        console.log('SW registered!', reg);
+                        
+                        // Proactively check for updates immediately on load
+                        reg.update();
+
+                        // Listen for updates and reload automatically once activated
+                        reg.addEventListener('updatefound', () => {
+                            const newWorker = reg.installing;
+                            if (newWorker) {
+                                newWorker.addEventListener('statechange', () => {
+                                    if (newWorker.state === 'activated') {
+                                        console.log('New update activated! Reloading...');
+                                        window.location.reload();
+                                    }
+                                });
+                            }
+                        });
+                    })
                     .catch(err => console.log('SW registration failed!', err));
             });
         }
